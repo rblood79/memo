@@ -53,6 +53,7 @@ const App = (props) => {
 
   const onLoad = async () => {
     //console.log('load!!!!')
+    //setData(null)
     const manageDoc = [];
 
     const mn = query(props.manage, where("ID", "!=", ""), orderBy("ID", "desc"));
@@ -60,8 +61,8 @@ const App = (props) => {
     manageSnapshot.forEach((doc) => {
       manageDoc.push({ id: doc.id, ...doc.data() })
     });
+    setData(null);
     setData(manageDoc);
-
   }
 
   /*const comma = (str)=> {
@@ -83,6 +84,7 @@ const App = (props) => {
       <div className='users'>
         <div className='resultHead'>
           <h2 className='title'>과제현황<span className='titleSub'>- 전체 {data && data.length}건</span></h2>
+          <button onClick={onLoad}>재조회</button>
         </div>
         <div>
 
@@ -138,11 +140,12 @@ const App = (props) => {
                   <th>Y+3</th>
                   <th>Y+4</th>
                   <th>Y+5</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  data &&
+                  data ?
                   Object.entries(data).map((item) =>
                     <tr key={item[0] + item[1]} onDoubleClick={() => test(item[1])}>
                       <td>{item[1].ID}</td>
@@ -170,7 +173,9 @@ const App = (props) => {
                       <td className='noPadding'><div className='splitGroup'>{SplitItem(item[1].DATAY5)}</div></td>
                       <td className='delTd' onClick={()=>{onDelete(item[1].ID)}}><i className="ri-close-circle-fill"></i></td>
                     </tr>
-                  )
+                  ) : 
+                  <tr>
+                  </tr>
                 }
               </tbody>
               <tfoot>

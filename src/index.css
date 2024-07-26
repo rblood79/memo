@@ -11,9 +11,18 @@ body {
   font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-width: 1200px;
+  /*min-width: 1200px;*/
   min-height: 100%;
   height: 100%;
+  overflow-y: scroll;
+}
+
+.notSupport{
+  display: flex;
+  flex: 1;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
 }
 
 #root {

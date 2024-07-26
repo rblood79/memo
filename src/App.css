@@ -414,7 +414,7 @@ tbody tr:hover td.delTd , tbody tr:active td.delTd  {
 
 .order {
   width: 100%;
-    max-width: 1880px;
+    max-width: 1870px;
     padding: 0 16px;
     display: flex;
     flex-direction: column;
@@ -759,8 +759,8 @@ tbody tr:hover td.delTd , tbody tr:active td.delTd  {
 .nav.sub {
   justify-content: space-between;
   width: 100%;
-  min-width: 1880px;
-  max-width: 1880px;
+  min-width: 1870px;
+  max-width: 1870px;
   padding: 0 16px;
 }
 
@@ -923,8 +923,8 @@ tbody tr:hover td, tbody tr:active td {
 
 .resultContainer {
   width: 100%;
-  min-width: 1880px;
-  max-width: 1880px;
+  min-width: 1870px;
+  max-width: 1870px;
   padding: 0 16px;
   display: flex;
   flex-direction: column;
