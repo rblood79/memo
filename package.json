@@ -47,7 +47,7 @@
       "ie 11"
     ]
   },
-  "homepage": "http://rblood79.github.io/memo/build/",
+  "homepage": "./",
   "plugins": [
     "babel/transform-react-jsx"
   ]
