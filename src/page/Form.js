@@ -226,7 +226,7 @@ const App = (props) => {
 
   useEffect(() => {
     !user ? history.push('/') : onLoad(false);
-  }, [user])
+  }, [])
 
   return (
     <>
@@ -238,7 +238,7 @@ const App = (props) => {
           </div>
           <div className='formBody'>
 
-
+          <h3>단일입력폼</h3>
             <div className='formGroup'>
               <div className='formWrap'>
                 <label className='label'>관리번호</label>
@@ -277,7 +277,7 @@ const App = (props) => {
                   value={title || ""}
                 />
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>1차 완료평가연도</label>
                 <select onChange={(e) => { setStartcompyear(e.target.value) }} value={startcompyear ? startcompyear : "default"}>
                   <option value="default" disabled>선택하세요</option>
@@ -291,7 +291,7 @@ const App = (props) => {
 
                 </select>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>1차 완료평가결과</label>
                 <select onChange={(e) => { setStartcompresult(e.target.value) }} value={startcompresult ? startcompresult : "default"}>
                   <option value="default" disabled>선택하세요</option>
@@ -302,7 +302,7 @@ const App = (props) => {
                   ))}
                 </select>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>2차 완료평가연도</label>
                 <input
                   name="endcompyear"
@@ -311,7 +311,7 @@ const App = (props) => {
                   value={endcompyear || ""}
                 />
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>2차 완료평가결과</label>
                 <select onChange={(e) => { setEndcompresult(e.target.value) }} value={endcompresult ? endcompresult : "default"}>
                   <option value="default" disabled>선택하세요</option>
@@ -322,7 +322,7 @@ const App = (props) => {
                   ))}
                 </select>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>1차 성과평가연도</label>
                 <select onChange={(e) => { setStartyear(e.target.value) }} value={startyear ? startyear : "default"}>
                   <option value="default" disabled>선택하세요</option>
@@ -333,7 +333,7 @@ const App = (props) => {
                   ))}
                 </select>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>1차 성과평가결과</label>
                 <select onChange={(e) => { setStartresult(e.target.value) }} value={startresult ? startresult : "default"}>
                   <option value="default" disabled>선택하세요</option>
@@ -344,7 +344,7 @@ const App = (props) => {
                   ))}
                 </select>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>2차 성과평가연도</label>
                 <input
                   name="endyear"
@@ -353,7 +353,7 @@ const App = (props) => {
                   value={endyear || ""}
                 />
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>2차 성과평가결과</label>
                 <select onChange={(e) => { setEndresult(e.target.value) }} value={endresult ? endresult : "default"}>
                   <option value="default" disabled>선택하세요</option>
@@ -364,7 +364,7 @@ const App = (props) => {
                   ))}
                 </select>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>재무성과(원)</label>
                 <input
                   name="result"
@@ -373,7 +373,7 @@ const App = (props) => {
                   value={result || ""}
                 />
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>사후관리</label>
                 <select onChange={(e) => { setColor(e.target.value) }} value={color ? color : "default"}>
                   <option value="default" disabled>선택하세요</option>
@@ -384,10 +384,8 @@ const App = (props) => {
                   ))}
                 </select>
               </div>
-
-
             </div>
-
+            <h3>다중입력폼</h3>
             <div className='formGroup'>
               <div className='formWrap'>
                 <label className='label'>관리지표</label>
@@ -429,7 +427,7 @@ const App = (props) => {
                   rows={5}
                 ></textarea>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>Y+2</label>
                 <textarea
                   name="datay2"
@@ -439,7 +437,7 @@ const App = (props) => {
                   rows={5}
                 ></textarea>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>Y+3</label>
                 <textarea
                   name="datay3"
@@ -449,7 +447,7 @@ const App = (props) => {
                   rows={5}
                 ></textarea>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>Y+4</label>
                 <textarea
                   name="datay4"
@@ -459,7 +457,7 @@ const App = (props) => {
                   rows={5}
                 ></textarea>
               </div>
-              <div className='formWrap'>
+              <div className='formWrap borderTop'>
                 <label className='label'>Y+5</label>
                 <textarea
                   name="datay5"

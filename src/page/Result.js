@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-//import _ from 'lodash';
+import _ from 'lodash';
 import 'remixicon/fonts/remixicon.css'
 import React, { useState, useEffect, useContext } from 'react';
 import context from '../component/Context';
@@ -13,6 +13,7 @@ const App = (props) => {
   const state = useContext(context);
   const { user } = state;
   const [data, setData] = useState(null);
+  //const [dataF, setDataF] = useState(null);
 
   const test = (e) => {
     //console.log('시험버전에선 제공되지 않습니다', e.ID, e)
@@ -65,18 +66,44 @@ const App = (props) => {
     setData(manageDoc);
   }
 
+  useEffect(() => {
+    !user ? history.push('/') : onLoad();
+  }, [])
+
   /*const comma = (str)=> {
     str = String(str);
     return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
   }*/
 
-  useEffect(() => {
-    !user ? history.push('/') : onLoad();
-  }, [user])
+  /*const filterData =(s,e)=>{
+    const start = s-1 || 0;
+    const end = e-1 || data.length-1;
+    const xx = _.filter(data, function(o,index){
+      return index >= start && index <= end
+    })
+    setDataF(xx);
+  }*/
+
+
 
   /*useEffect(() => {
-    data && console.log('data up!!!!!!', data.length)
+    data && console.log('data up!!!!!!', _.filter(data, ['STARTCOMPYEAR', "2014"]))
   }, [data])*/
+
+  /*const [inputs, setInputs] = useState({
+    startNum: "",
+    endNum: "",
+  });
+  const { startNum, endNum } = inputs;
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+
+    setInputs({
+      ...inputs,
+      [name]: value || "",
+    });
+  };*/
 
   return (
     <div className='resultContainer'>
@@ -84,7 +111,9 @@ const App = (props) => {
       <div className='users'>
         <div className='resultHead'>
           <h2 className='title'>과제현황<span className='titleSub'>- 전체 {data && data.length}건</span></h2>
-          <button onClick={onLoad}>재조회</button>
+        
+          
+          <button className="refresh" onClick={onLoad}>재조회</button>
         </div>
         <div>
 
@@ -146,7 +175,7 @@ const App = (props) => {
               <tbody>
                 {
                   data ?
-                  Object.entries(data).map((item) =>
+                  Object.entries(data).map((item,index) =>
                     <tr key={item[0] + item[1]} onDoubleClick={() => test(item[1])}>
                       <td>{item[1].ID}</td>
                       <td className='breakAll'>{item[1].CHECKNUM}</td>
