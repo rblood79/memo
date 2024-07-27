@@ -1,5 +1,5 @@
 /* eslint-disable array-callback-return */
-import _ from 'lodash';
+//import _ from 'lodash';
 import 'remixicon/fonts/remixicon.css'
 import React, { useState, useEffect, useContext } from 'react';
 import context from '../component/Context';
