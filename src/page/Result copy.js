@@ -39,65 +39,13 @@ const App = (props) => {
       onLoad();
     }
   }
-  const ItemList =(props) => {
-    const item = props.data[1];
-    const indiArray = item.INDI ? item.INDI.split('\n') : [];
-    const unitArray = item.UNIT ? item.UNIT.split('\n') : [];
-    const d0Array = item.DATAY0 ? item.DATAY0.split('\n') : [];
-    const d1Array = item.DATAY1 ? item.DATAY1.split('\n') : [];
-    const d2Array = item.DATAY2 ? item.DATAY2.split('\n') : [];
-    const d3Array = item.DATAY3 ? item.DATAY3.split('\n') : [];
-    const d4Array = item.DATAY4 ? item.DATAY4.split('\n') : [];
-    const d5Array = item.DATAY5 ? item.DATAY5.split('\n') : [];
 
-
-    const rspan = indiArray.length > 0 ? indiArray.length : 1;
-    return <>
-      <tr onDoubleClick={() => test(item)}>
-        <td rowSpan={rspan}>{item.ID}</td>
-        <td rowSpan={rspan} className='breakAll'>{item.CHECKNUM}</td>
-        <td rowSpan={rspan}>{item.LEADER}</td>
-        <td rowSpan={rspan}>{item.TITLE}</td>
-        <td rowSpan={rspan}>{item.STARTCOMPYEAR}</td>
-        <td rowSpan={rspan}>{item.STARTCOMPRESULT}</td>
-        <td rowSpan={rspan}>{item.ENDCOMPYEAR}</td>
-        <td rowSpan={rspan}>{item.ENDCOMPRESULT}</td>
-        <td rowSpan={rspan}>{item.STARTYEAR}</td>
-        <td rowSpan={rspan}>{item.STARTRESULT}</td>
-        <td rowSpan={rspan}>{item.ENDCOMPYEAR}</td>
-        <td rowSpan={rspan}>{item.ENDRESULT}</td>
-        <td rowSpan={rspan}>{item.RESULT}</td>
-        <td rowSpan={rspan} className='noPadding'><span className={item.COLOR === 'red' ? 'redBox' : item.COLOR === 'green' ? 'greenBox' : item.COLOR === 'yellow' ? 'yellowBox' : 'normalBox'} /></td>
-        <td>{indiArray[0]}</td>
-        <td>{unitArray[0]}</td>
-        <td>{d0Array[0]}</td>
-        <td>{d1Array[0]}</td>
-        <td>{d2Array[0]}</td>
-        <td>{d3Array[0]}</td>
-        <td>{d4Array[0]}</td>
-        <td>{d5Array[0]}</td>
-        <td className='delTd' onClick={()=>{onDelete(item[1].ID)}}><i className="ri-close-circle-fill"></i></td>
-      </tr>
-      {indiArray.length > 0 && SplitItem(indiArray, unitArray, d0Array, d1Array, d2Array, d3Array, d4Array, d5Array, item)}
-    </>
-
-  }
-
-
-  const SplitItem = (indi, unit, d0Array, d1Array, d2Array, d3Array, d4Array, d5Array, itemID) => {
+  const SplitItem = (e) => {
+    let data = e ? e.split('\n') : null;
     const result = [];
-    indi.map((item, index) => {
-      index > 0 && result.push(
-        <tr key={'list'+index} onDoubleClick={() => test(itemID)}>
-          <td>{indi[index]}</td>
-          <td>{unit[index]}</td>
-          <td>{d0Array[index]}</td>
-          <td>{d1Array[index]}</td>
-          <td>{d2Array[index]}</td>
-          <td>{d3Array[index]}</td>
-          <td>{d4Array[index]}</td>
-          <td>{d5Array[index]}</td>
-        </tr>
+    data && data.map((item, index) => {
+      item && result.push(
+        <span key={index} className='splitItem'>{item}</span>
       )
     });
     return result;
@@ -226,9 +174,42 @@ const App = (props) => {
               </thead>
               <tbody>
                 {
-                  data && Object.entries(data).map((item) => <ItemList key={item[0] + item[1]} data={item} />)
+                  data ?
+                  Object.entries(data).map((item,index) =>
+                    <tr key={item[0] + item[1]} onDoubleClick={() => test(item[1])}>
+                      <td>{item[1].ID}</td>
+                      <td className='breakAll'>{item[1].CHECKNUM}</td>
+                      <td>{item[1].LEADER}</td>
+                      <td>{item[1].TITLE}</td>
+                      <td>{item[1].STARTCOMPYEAR}</td>
+                      <td>{item[1].STARTCOMPRESULT}</td>
+                      <td>{item[1].ENDCOMPYEAR}</td>
+                      <td>{item[1].ENDCOMPRESULT}</td>
+                      <td>{item[1].STARTYEAR}</td>
+                      <td>{item[1].STARTRESULT}</td>
+                      <td>{item[1].ENDCOMPYEAR}</td>
+                      <td>{item[1].ENDRESULT}</td>
+                      <td>{item[1].RESULT}</td>
+                      <td className='noPadding'><span className={item[1].COLOR === 'red' ? 'redBox' : item[1].COLOR === 'green' ? 'greenBox' : item[1].COLOR === 'yellow' ? 'yellowBox' : 'normalBox'} /></td>
+
+                      <td className='noPadding'><div className='splitGroup'>{SplitItem(item[1].INDI)}</div></td>
+                      <td className='noPadding'><div className='splitGroup'>{SplitItem(item[1].UNIT)}</div></td>
+                      <td className='noPadding'><div className='splitGroup'>{SplitItem(item[1].DATAY0)}</div></td>
+                      <td className='noPadding'><div className='splitGroup'>{SplitItem(item[1].DATAY1)}</div></td>
+                      <td className='noPadding'><div className='splitGroup'>{SplitItem(item[1].DATAY2)}</div></td>
+                      <td className='noPadding'><div className='splitGroup'>{SplitItem(item[1].DATAY3)}</div></td>
+                      <td className='noPadding'><div className='splitGroup'>{SplitItem(item[1].DATAY4)}</div></td>
+                      <td className='noPadding'><div className='splitGroup'>{SplitItem(item[1].DATAY5)}</div></td>
+                      <td className='delTd' onClick={()=>{onDelete(item[1].ID)}}><i className="ri-close-circle-fill"></i></td>
+                    </tr>
+                  ) : 
+                  <tr>
+                  </tr>
                 }
               </tbody>
+              <tfoot>
+
+              </tfoot>
             </table>
           </div>
         </div>

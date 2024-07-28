@@ -121,6 +121,7 @@
   border: 1px solid rgba(0, 0, 0, 0.1);
   font-weight: 400;
   padding: 6px 4px;
+  height: 51px;
   min-height: 51px;
   word-break: keep-all;
   cursor: pointer;
@@ -205,10 +206,7 @@
   align-items: center;
 }
 
-tbody tr:hover td.delTd , tbody tr:active td.delTd  {
-  transition: all 0.3s ease-in-out;
-  background-color: transparent !important;
-}
+
 
 .delTd i {
   color:#0067b8;
@@ -825,9 +823,14 @@ tbody tr:hover td.delTd , tbody tr:active td.delTd  {
   color: #fff;
 }
 
-tbody tr:hover td, tbody tr:active td {
+tbody td:hover{
   transition: all 0.3s ease-in-out;
   background-color: #efefef !important;
+}
+
+tbody tr:hover td.delTd{
+  transition: all 0.3s ease-in-out;
+  background-color: transparent !important;
 }
 
 .profile {
