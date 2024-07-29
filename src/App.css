@@ -110,13 +110,19 @@
 }
 
 .table thead {
-  background-color: #efefef;
-  border-bottom: 1px double #ccc;
+  
   height: 51px;
 }
 
 .table tfoot {
   background-color: #efefef;
+}
+
+.table thead th {
+  background-color: #efefef;
+  border-bottom: 1px double #ccc;
+  /*position: sticky;
+	top: 0;*/
 }
 
 .table th, .table td {
@@ -284,7 +290,7 @@
 
 .login,
 .user {
-  width: 375px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -442,6 +448,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 .user h2 {
@@ -1064,7 +1072,14 @@ tbody tr:hover td.delTd{
   margin-right: 4px;
 }
 
-@media (max-width: 424.9px) {
+@media (max-width: 459.9px) {
+  .container {
+    width: 100% !important;
+  }
+  .login {
+    height: 100% !important;
+    padding: 16px !important;
+  }
   .resultContainer, .order, .nav.sub{
     min-width: 100% !important;
     max-width: 100% !important;
@@ -1084,11 +1099,19 @@ tbody tr:hover td.delTd{
   }
 
   .nav {
-    flex-direction: column;
+    flex-direction: column !important;
   }
 
   .navRes {
-    width: 100%;
+    width: 100% !important;
+  }
+
+  .controll .button {
+    width: 100% !important;
+  }
+
+  .delTd {
+    position:relative !important;
   }
 }
 
@@ -1096,7 +1119,7 @@ tbody tr:hover td.delTd{
   header, footer, .refresh, .delTd {
     display: none !important;
   }
-
+  
   .users {
     margin-top: 0px !important;
     margin-bottom: 0px !important;

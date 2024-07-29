@@ -53,7 +53,7 @@ const App = (props) => {
 
     const rspan = indiArray.length > 0 ? indiArray.length : 1;
     return <>
-      <tr onDoubleClick={() => test(item)}>
+      <tr onDoubleClick={() => !isMobile && test(item)}>
         <td rowSpan={rspan}>{item.ID}</td>
         <td rowSpan={rspan} className='breakAll'>{item.CHECKNUM}</td>
         <td rowSpan={rspan}>{item.LEADER}</td>
@@ -76,7 +76,7 @@ const App = (props) => {
         <td>{d3Array[0]}</td>
         <td>{d4Array[0]}</td>
         <td>{d5Array[0]}</td>
-        <td className='delTd' onClick={()=>{onDelete(item.ID)}}><i className="ri-close-circle-fill"></i></td>
+        {isMobile ? <td className='delTd' onClick={()=>{ test(item)}}><i className="ri-edit-circle-fill"></i></td> : <td className='delTd' onClick={()=>{ onDelete(item.ID)}}><i className="ri-close-circle-fill"></i></td>}
       </tr>
       {indiArray.length > 0 && SplitItem(indiArray, unitArray, d0Array, d1Array, d2Array, d3Array, d4Array, d5Array, item)}
     </>
@@ -88,7 +88,7 @@ const App = (props) => {
     const result = [];
     indi.map((item, index) => {
       index > 0 && result.push(
-        <tr key={'list'+index} onDoubleClick={() => test(itemID)}>
+        <tr key={'list'+index} onDoubleClick={() => !isMobile && test(itemID)}>
           <td>{indi[index]}</td>
           <td>{unit[index]}</td>
           <td>{d0Array[index]}</td>
