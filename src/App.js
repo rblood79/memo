@@ -48,7 +48,7 @@ const App = (props) => {
       {user && <Head path={props.location.pathname}/>}
       {isMobile ? <div className='notSupport'>모바일은 지원하지 않습니다.</div> : 
       <main className='main'>
-        <Route exact path="/" render={() => <Home/>} />
+        <Route exact path="/" render={() => <Home manage={manageRef}/>} />
         <Route path="/form" render={() => <Form manage={manageRef}/>} />
         <Route path="/result" render={() => <Result manage={manageRef}/>} />
       </main>

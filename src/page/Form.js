@@ -244,7 +244,7 @@ const App = (props) => {
                 <label className='label'>관리번호</label>
                 <input
                   name="id"
-                  placeholder="입력하세요"
+                  placeholder="입력하세요(등록후 변경 불가합니다)"
                   onChange={onChange}
                   value={id || ""}
                   disabled={data}

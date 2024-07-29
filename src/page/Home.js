@@ -1,6 +1,7 @@
 
 import React, { useContext, useState, useEffect } from 'react';
 import { useHistory } from "react-router-dom";
+import { doc, getDoc } from 'firebase/firestore';
 import context from '../component/Context';
 import mnd from '../assets/logo.svg';
 
@@ -17,23 +18,21 @@ const App = (props) => {
   //let regex = /[^0-9]/g;
 
   const onCheck = async () => {
-    if (number === 'admin' && pw === 'admin') {
-      setUser(number);
-      history.push('/result')
+    const docRef = doc(props.manage, "ini");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      if (number === docSnap.data().adminID && pw === docSnap.data().adminPW) {
+        setUser(number);
+        history.push('/result')
+      } else {
+        setNumber(null)
+        setPw(null)
+      }
     } else {
-      setNumber(null)
-      setPw(null)
+      //setNumber('접속이 원활하지 않습니다')
     }
-    //!reg_num.test(idNum) ? setNumber('fail') : !reg_num.test(pw) && setPw('fail');
-    /*if (number === 'admin' && pw === 'admin') {
-      setUser(number);
-      history.push('/result')
-    } else if (number && pw !== 'fail' && number === pw) {
-      setUser(number.replace(regex, ''));
-      history.push('/main')
-    } else if (number && pw && number !== pw) {
-      setPw('same')
-    }*/
+
+
   }
 
   useEffect(() => {
@@ -58,26 +57,27 @@ const App = (props) => {
         </div>
         <div>
           <div className='armyWrap'>
-          
-                <div className={'input'}>
-                  <input className={'id'} type='text' maxLength={12} placeholder="아이디" onChange={({ target: { value } }) => {
-                    setNumber(value)
-                  }} />
-                </div>
-                <div className={'input'}>
-                  <input className={'pw'} type={view ? 'text' : 'password'} maxLength={12} placeholder="비밀번호" onChange={({ target: { value } }) => {
-                    setPw(value)
-                  }} />
-                  <button className='passView' onClick={()=>{setView(view ? false : true)}}><i className={view ? "ri-eye-off-line" : "ri-eye-line"}></i></button>
-                  <span className={'vali'}>{number === null && pw === null ? '아이디와 비밀번호는 관리자에게 문의하세요' : number === 'fail' ? '올바른 아이디가 아닙니다' : pw === 'fail' ? '비밀번호를 입력하세요' : pw === 'same' && '비밀번호가 일치하지 않습니다'}</span>
-                </div>
+            <form>
+              <div className={'input'}>
+                <input className={'id'} type='text' maxLength={12} placeholder="아이디" onChange={({ target: { value } }) => {
+                  setNumber(value)
+                }} />
+              </div>
+              <div className={'input'}>
+                <input className={'pw'} type={view ? 'text' : 'password'} maxLength={12} placeholder="비밀번호" autoComplete="off" onChange={({ target: { value } }) => {
+                  setPw(value)
+                }} />
+                <button className='passView' onClick={() => { setView(view ? false : true) }}><i className={view ? "ri-eye-off-line" : "ri-eye-line"}></i></button>
+                <span className={'vali'}>{number === null && pw === null ? '아이디와 비밀번호는 관리자에게 문의하세요' : number === 'fail' ? '올바른 아이디가 아닙니다' : pw === 'fail' ? '비밀번호를 입력하세요' : pw === 'same' && '비밀번호가 일치하지 않습니다'}</span>
+              </div>
+            </form>
           </div>
           <div className='controll'>
-            
-                <button className={'button'} onClick={() => {
-                  onCheck(number)
-                }}>확인</button>
-              
+
+            <button className={'button'} onClick={() => {
+              onCheck(number)
+            }}>확인</button>
+
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import 'remixicon/fonts/remixicon.css'
 import React, { useState, useEffect, useContext } from 'react';
 import context from '../component/Context';
 import { useHistory } from "react-router-dom";
-//import { isMobile } from 'react-device-detect';
+import { isMobile } from 'react-device-detect';
 
 import { doc, query, where, getDoc, getDocs, orderBy, deleteDoc } from 'firebase/firestore';
 
@@ -76,7 +76,7 @@ const App = (props) => {
         <td>{d3Array[0]}</td>
         <td>{d4Array[0]}</td>
         <td>{d5Array[0]}</td>
-        <td className='delTd' onClick={()=>{onDelete(item[1].ID)}}><i className="ri-close-circle-fill"></i></td>
+        <td className='delTd' onClick={()=>{onDelete(item.ID)}}><i className="ri-close-circle-fill"></i></td>
       </tr>
       {indiArray.length > 0 && SplitItem(indiArray, unitArray, d0Array, d1Array, d2Array, d3Array, d4Array, d5Array, item)}
     </>
@@ -105,22 +105,22 @@ const App = (props) => {
 
 
   const onLoad = async () => {
-    //console.log('load!!!!')
-    //setData(null)
+    //console.log('onLoad')
+    //setData(null);
     const manageDoc = [];
-
     const mn = query(props.manage, where("ID", "!=", ""), orderBy("ID", "desc"));
     const manageSnapshot = await getDocs(mn);
     manageSnapshot.forEach((doc) => {
       manageDoc.push({ id: doc.id, ...doc.data() })
     });
-    setData(null);
+
     setData(manageDoc);
   }
 
   useEffect(() => {
     !user ? history.push('/') : onLoad();
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, history])
 
   /*const comma = (str)=> {
     str = String(str);
@@ -165,7 +165,7 @@ const App = (props) => {
           <h2 className='title'>과제현황<span className='titleSub'>- 전체 {data && data.length}건</span></h2>
         
           
-          <button className="refresh" onClick={onLoad}>재조회</button>
+          <button className="refresh" onClick={onLoad}><i className="ri-restart-line"></i><span>재조회</span></button>
         </div>
         <div>
 
@@ -186,7 +186,7 @@ const App = (props) => {
                 <col width="70px" />
                 <col width="80px" />
                 <col width="40px" />
-                <col width="auto" />
+                <col width={isMobile ? "234px" : "auto"} />
                 <col width="48px" />
                 <col width="84px" />
                 <col width="84px" />

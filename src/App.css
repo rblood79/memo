@@ -12,11 +12,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 48px;
   width: 100%;
   background: #0678d7;
   position: sticky;
   top: 0;
+  z-index: 100;
   /*border-bottom: 1px solid rgba(0, 0, 0, 0.16);*/
 }
 
@@ -39,6 +39,8 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  min-height: 48px;
+  height: 48px;
 }
 
 .headTitle img {
@@ -788,15 +790,15 @@
 
 .nav .navButton {
   text-decoration: none;
-  background-color: #fff;
-  padding: 0;
+  background-color: #efefef;
+  padding: 0 16px;
   border: 0;
   height: 48px !important;
-  width: 96px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  flex: 1;
   color: #a7a7a7;
   cursor: pointer;
   border-radius: 0;
@@ -809,6 +811,7 @@
 
 .nav .navButton.active {
   color: #343434;
+  background: #fff;
 }
 
 .nav .navButton.active i {
@@ -1009,7 +1012,7 @@ tbody tr:hover td.delTd{
 
 .formWrap input, .formWrap select , .formWrap textarea {
   flex: 1;
-  min-width: 260px;
+  /*min-width: 260px;*/
   border: 1px solid #E0E0E0;
   padding: 8px;
   font-size: 12px;
@@ -1047,6 +1050,47 @@ tbody tr:hover td.delTd{
   height: 100%;
   border: 2px solid #fff;
 }*/
+.refresh {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.refresh i {
+  font-size: 21px;
+  margin-right: 4px;
+}
+
+@media (max-width: 424.9px) {
+  .resultContainer, .order, .nav.sub{
+    min-width: 100% !important;
+    max-width: 100% !important;
+  }
+  .formGroup {
+    grid-template-columns: auto !important;
+    grid-template-rows: auto !important;
+  }
+
+  .formWrap:not(:first-child) input, .formWrap:not(:first-child) select, .formWrap:not(:first-child) textarea{
+    border-top: none !important;
+  }
+
+  .total, .users {
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .nav {
+    flex-direction: column;
+  }
+
+  .navRes {
+    width: 100%;
+  }
+}
 
 @media print {
   header, footer, .refresh, .delTd {
