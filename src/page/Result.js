@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 //import _ from 'lodash';
 import 'remixicon/fonts/remixicon.css'
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import context from '../component/Context';
 import { useHistory } from "react-router-dom";
 import { isMobile } from 'react-device-detect';
@@ -13,6 +13,8 @@ const App = (props) => {
   const state = useContext(context);
   const { user } = state;
   const [data, setData] = useState(null);
+
+  const tableRef = useRef();
   //const [dataF, setDataF] = useState(null);
 
   const test = (e) => {
@@ -28,18 +30,74 @@ const App = (props) => {
     await deleteDoc(doc(props.manage, id), onCheck(id));
   }
 
-  const onCheck = async(id)=>{
+  const onCheck = async (id) => {
     const docRef = doc(props.manage, id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       //console.log('아직있음')
-    }else{
+    } else {
       //console.log('지워짐')
       onLoad();
     }
   }
-  const ItemList =(props) => {
+  const style = {
+    table: {
+      width: "100%",
+      height: "1px",
+      borderCollapse: "collapse",
+      border: "2px solid #000",
+      backgroundColor: "#fff",
+      fontSize: "12px",
+      tableLayout: "fixed",
+      th: {
+        background: "#efefef",
+        border: "0.5pt solid #d3d3d3",
+        fontWeight: "400",
+        padding: "6px 4px",
+        height: "51px",
+        minHeight: "51px",
+        wordBreak: "keep-all",
+        borderBottom: "0.5pt solid #ccc"
+      },
+      td: {
+        border: "0.5pt solid #d3d3d3",
+        fontWeight: "400",
+        padding: "6px 4px",
+        height: "51px",
+        minHeight: "51px",
+        wordBreak: "keep-all",
+        textAlign: "center",
+      },
+      tdB: {
+        border: "0.5pt solid #d3d3d3",
+        fontWeight: "400",
+        padding: "6px 4px",
+        height: "51px",
+        minHeight: "51px",
+        wordBreak: "break-all",
+        textAlign: "center",
+      },
+      tdRed: {
+        background: "#D01414",
+        padding: "2px",
+      },
+      tdGreen:{
+        background: "#20D067",
+        padding: "2px",
+      },
+      tdYellow:{
+        background: "#EFD214",
+        padding: "2px",
+      },
+      tdNormal:{
+        background: "#efefef",
+        padding: "2px",
+      }
+    }
+  }
+
+  const ItemList = (props) => {
     const item = props.data[1];
     const indiArray = item.INDI ? item.INDI.split('\n') : [];
     const unitArray = item.UNIT ? item.UNIT.split('\n') : [];
@@ -54,29 +112,29 @@ const App = (props) => {
     const rspan = indiArray.length > 0 ? indiArray.length : 1;
     return <>
       <tr onDoubleClick={() => !isMobile && test(item)}>
-        <td rowSpan={rspan}>{item.ID}</td>
-        <td rowSpan={rspan} className='breakAll'>{item.CHECKNUM}</td>
-        <td rowSpan={rspan}>{item.LEADER}</td>
-        <td rowSpan={rspan}>{item.TITLE}</td>
-        <td rowSpan={rspan}>{item.STARTCOMPYEAR}</td>
-        <td rowSpan={rspan}>{item.STARTCOMPRESULT}</td>
-        <td rowSpan={rspan}>{item.ENDCOMPYEAR}</td>
-        <td rowSpan={rspan}>{item.ENDCOMPRESULT}</td>
-        <td rowSpan={rspan}>{item.STARTYEAR}</td>
-        <td rowSpan={rspan}>{item.STARTRESULT}</td>
-        <td rowSpan={rspan}>{item.ENDCOMPYEAR}</td>
-        <td rowSpan={rspan}>{item.ENDRESULT}</td>
-        <td rowSpan={rspan}>{item.RESULT}</td>
-        <td rowSpan={rspan} className='noPadding'><span className={item.COLOR === 'red' ? 'redBox' : item.COLOR === 'green' ? 'greenBox' : item.COLOR === 'yellow' ? 'yellowBox' : 'normalBox'} /></td>
-        <td>{indiArray[0]}</td>
-        <td>{unitArray[0]}</td>
-        <td>{d0Array[0]}</td>
-        <td>{d1Array[0]}</td>
-        <td>{d2Array[0]}</td>
-        <td>{d3Array[0]}</td>
-        <td>{d4Array[0]}</td>
-        <td>{d5Array[0]}</td>
-        {isMobile ? <td className='delTd' onClick={()=>{ test(item)}}><i className="ri-edit-circle-fill"></i></td> : <td className='delTd' onClick={()=>{ onDelete(item.ID)}}><i className="ri-close-circle-fill"></i></td>}
+        <td rowSpan={rspan} style={style.table.td}>{item.ID}</td>
+        <td rowSpan={rspan} style={style.table.tdB}>{item.CHECKNUM}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.LEADER}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.TITLE}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.STARTCOMPYEAR}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.STARTCOMPRESULT}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.ENDCOMPYEAR}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.ENDCOMPRESULT}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.STARTYEAR}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.STARTRESULT}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.ENDCOMPYEAR}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.ENDRESULT}</td>
+        <td rowSpan={rspan} style={style.table.td}>{item.RESULT}</td>
+        <td rowSpan={rspan} style={item.COLOR === 'red' ? style.table.tdRed : item.COLOR === 'green' ? style.table.tdGreen : item.COLOR === 'yellow' ? style.table.tdYellow : style.table.tdNormal}></td>
+        <td style={style.table.td}>{indiArray[0]}</td>
+        <td style={style.table.td}>{unitArray[0]}</td>
+        <td style={style.table.td}>{d0Array[0]}</td>
+        <td style={style.table.td}>{d1Array[0]}</td>
+        <td style={style.table.td}>{d2Array[0]}</td>
+        <td style={style.table.td}>{d3Array[0]}</td>
+        <td style={style.table.td}>{d4Array[0]}</td>
+        <td style={style.table.td}>{d5Array[0]}</td>
+        {isMobile ? <td className='delTd' onClick={() => { test(item) }}><i className="ri-edit-circle-fill"></i></td> : <td className='delTd' onClick={() => { onDelete(item.ID) }}><i className="ri-close-circle-fill"></i></td>}
       </tr>
       {indiArray.length > 0 && SplitItem(indiArray, unitArray, d0Array, d1Array, d2Array, d3Array, d4Array, d5Array, item)}
     </>
@@ -88,15 +146,15 @@ const App = (props) => {
     const result = [];
     indi.map((item, index) => {
       index > 0 && result.push(
-        <tr key={'list'+index} onDoubleClick={() => !isMobile && test(itemID)}>
-          <td>{indi[index]}</td>
-          <td>{unit[index]}</td>
-          <td>{d0Array[index]}</td>
-          <td>{d1Array[index]}</td>
-          <td>{d2Array[index]}</td>
-          <td>{d3Array[index]}</td>
-          <td>{d4Array[index]}</td>
-          <td>{d5Array[index]}</td>
+        <tr key={'list' + index} onDoubleClick={() => !isMobile && test(itemID)}>
+          <td style={style.table.td}>{indi[index]}</td>
+          <td style={style.table.td}>{unit[index]}</td>
+          <td style={style.table.td}>{d0Array[index]}</td>
+          <td style={style.table.td}>{d1Array[index]}</td>
+          <td style={style.table.td}>{d2Array[index]}</td>
+          <td style={style.table.td}>{d3Array[index]}</td>
+          <td style={style.table.td}>{d4Array[index]}</td>
+          <td style={style.table.td}>{d5Array[index]}</td>
         </tr>
       )
     });
@@ -117,9 +175,30 @@ const App = (props) => {
     setData(manageDoc);
   }
 
+  const onDownload = async () => {
+    //console.log(tableRef.current.outerHTML)
+    let xData = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+    xData += '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
+    xData += '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
+    xData += '<x:Name>DATA Sheet</x:Name>';
+    xData += '<x:WorksheetOptions><x:Panes></x:Panes></x:WorksheetOptions></x:ExcelWorksheet>';
+    xData += '</x:ExcelWorksheets></x:ExcelWorkbook></xml>';
+    xData += '</head><body>';
+    xData += tableRef.current.outerHTML;
+    xData += '</body></html>';
+
+    let blob = new Blob([xData], {
+      type: "application/csv;charset=utf-8;"
+    });
+    var a = document.createElement("a");
+    a.href = window.URL.createObjectURL(blob);
+    a.download = "test.xls";
+    a.click();
+  }
+
   useEffect(() => {
     !user ? history.push('/') : onLoad();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, history])
 
   /*const comma = (str)=> {
@@ -163,14 +242,15 @@ const App = (props) => {
       <div className='users'>
         <div className='resultHead'>
           <h2 className='title'>과제현황<span className='titleSub'>- 전체 {data && data.length}건</span></h2>
-        
-          
-          <button className="refresh" onClick={onLoad}><i className="ri-restart-line"></i><span>재조회</span></button>
+          <div className='resultRight'>
+            <button className="refresh" onClick={onDownload}><i className="ri-file-excel-2-line"></i><span>엑셀다운</span></button>
+            <button className="refresh" onClick={onLoad}><i className="ri-restart-line"></i><span>재조회</span></button>
+          </div>
         </div>
         <div>
 
           <div className='tableContents'>
-            <table className='table'>
+            <table ref={tableRef} style={style.table}>
               <colgroup>
                 <col width="70px" />
                 <col width="110px" />
@@ -198,29 +278,29 @@ const App = (props) => {
               </colgroup>
               <thead>
                 <tr>
-                  <th>관리번호</th>
-                  <th>확인번호</th>
-                  <th>팀장</th>
-                  <th>과제명</th>
-                  <th>1차완료<br />평가연도</th>
-                  <th>1차완료<br />평가결과</th>
-                  <th>2차완료<br />평가연도</th>
-                  <th>2차완료<br />평가결과</th>
-                  <th>1차성과<br />평가연도</th>
-                  <th>1차성과<br />평가결과</th>
-                  <th>2차성과<br />평가연도</th>
-                  <th>2차성과<br />평가결과</th>
+                  <th style={style.table.th}>관리번호</th>
+                  <th style={style.table.th}>확인번호</th>
+                  <th style={style.table.th}>팀장</th>
+                  <th style={style.table.th}>과제명</th>
+                  <th style={style.table.th}>1차완료<br />평가연도</th>
+                  <th style={style.table.th}>1차완료<br />평가결과</th>
+                  <th style={style.table.th}>2차완료<br />평가연도</th>
+                  <th style={style.table.th}>2차완료<br />평가결과</th>
+                  <th style={style.table.th}>1차성과<br />평가연도</th>
+                  <th style={style.table.th}>1차성과<br />평가결과</th>
+                  <th style={style.table.th}>2차성과<br />평가연도</th>
+                  <th style={style.table.th}>2차성과<br />평가결과</th>
 
-                  <th>재무성과<br />(원)</th>
-                  <th>사후<br />관리</th>
-                  <th>관리지표</th>
-                  <th>단위</th>
-                  <th>수치</th>
-                  <th>Y+1</th>
-                  <th>Y+2</th>
-                  <th>Y+3</th>
-                  <th>Y+4</th>
-                  <th>Y+5</th>
+                  <th style={style.table.th}>재무성과<br />(원)</th>
+                  <th style={style.table.th}>사후<br />관리</th>
+                  <th style={style.table.th}>관리지표</th>
+                  <th style={style.table.th}>단위</th>
+                  <th style={style.table.th}>수치</th>
+                  <th style={style.table.th}>Y+1</th>
+                  <th style={style.table.th}>Y+2</th>
+                  <th style={style.table.th}>Y+3</th>
+                  <th style={style.table.th}>Y+4</th>
+                  <th style={style.table.th}>Y+5</th>
                   <th></th>
                 </tr>
               </thead>

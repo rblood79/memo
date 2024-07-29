@@ -99,122 +99,13 @@
   overflow-x: auto;
 }
 
-.table {
-  width: 100%;
-  height: 1px;
-  border-collapse: collapse;
-  border: 2px solid #000;
-  background-color: #fff;
-  font-size: 12px;
-  table-layout: fixed;
-}
-
-.table thead {
-  
-  height: 51px;
-}
-
-.table tfoot {
-  background-color: #efefef;
-}
-
-.table thead th {
-  background-color: #efefef;
-  border-bottom: 1px double #ccc;
-  /*position: sticky;
-	top: 0;*/
-}
-
-.table th, .table td {
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  font-weight: 400;
-  padding: 6px 4px;
-  height: 51px;
-  min-height: 51px;
-  word-break: keep-all;
-  cursor: pointer;
-}
-
-.table td.noPadding {
-  padding: 0;
-}
-
-.table td.breakAll {
-  word-break: break-all;
-}
-
-.splitGroup {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  min-height: 51px;
-}
-
-.splitItem {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 6px 2px;
-  min-height: 51px;
-  max-height: 51px;
-  word-break: keep-all;
-}
-
-.splitItem:last-child {
-  border-bottom: 0px;
-}
-
-.table .subHead th {
-  background-color: #ddd;
-  font-weight: 400;
-}
-
-.table .sum
-{
-  background-color: rgba(248, 191, 0, 0.24) !important;
-}
-
-.total .table td:nth-child(13),
-.total .table td:nth-child(16),
-.total .table td:nth-child(20),
-.total .table td:nth-child(25)
-{
-  background-color: #fffcf0;
-}
-
-.table i {
-  font-size: 18px;
-}
-
-.ri-checkbox-circle-line {
-  color: #0067b8;
-}
-
-.ri-checkbox-blank-circle-line{
-  color:#7a7a7a;
-}
-
-.ri-close-line{
-  color:#dedede;
-}
-
 .delTd {
   position: absolute;
-  border: none !important;
   display: flex;
   align-items: center;
+  min-height: 51px;
+  padding-left: 4px;
 }
-
-.firstTd{
-  position: absolute;
-  border: none !important;
-  display: flex;
-  align-items: center;
-}
-
-
 
 .delTd i {
   color:#0067b8;
@@ -737,7 +628,10 @@
   justify-content: space-between;
   align-items: center;
 }
-
+.resultRight {
+  display: flex;
+  flex-direction: row;
+}
 .total,
 .users {
   margin-top: 48px;
