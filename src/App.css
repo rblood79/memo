@@ -105,6 +105,7 @@
   align-items: center;
   min-height: 51px;
   padding-left: 4px;
+  cursor: pointer;
 }
 
 .delTd i {
@@ -527,100 +528,6 @@
   padding: 0 8px;
 }
 
-.accordionItem input[type="radio"]:checked + label {
-  background-color: #343434;
-}
-
-.accordionItem input[type="radio"]:checked + label span {
-  color: #fff;
-}
-
-.accordionItem input[type="radio"]:checked + label:after {
-  content: url("./assets/check-line.png");
-  position: absolute;
-  right: 16px;
-}
-
-.armyWrap {
-  z-index: 1;
-}
-
-.armyComment {
-  color: #343434;
-  font-weight: 900;
-  display: flex;
-  flex-direction: column;
-}
-
-.armyComment i {
-  font-size: 28px;
-  color: #0067b8;
-}
-
-.armySelect {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-top: 8px;
-  position: relative;
-  /*border: 0px solid rgba(0, 0, 0, 0.24);*/
-  border-radius: 8px;
-  overflow: hidden;
-  width: 100%;
-}
-
-.armySelect input[type='radio'] {
-  display: none;
-}
-
-.armySelect label {
-  font-size: 16px;
-  font-weight: 900;
-  width: 33.3333%;
-  height: 48px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #0067b8;
-  color: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.16);
-}
-
-.armySelect + .input input {
-  border-radius: 0;
-}
-
-.armySelect .armyLeft {
-  border-right: none;
-  border-right: 0;
-  border-top-left-radius: 8px;
-  border-bottom-left-radius: 8px;
-}
-
-.armySelect .armyCenter {
-  border-right: none;
-  border-left: none;
-  border-left: 0;
-  border-right: 0;
-}
-
-.armySelect .armyRight {
-  border-left: none;
-  border-left: 0;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
-
-/*.armySelect input[type='radio']:checked+label:after {
-  content: url('./page/check-line.png');
-  position: absolute;
-  top: 8px;
-}*/
-
-.armySelect input[type="radio"]:checked + label {
-  background-color: #343434;
-  color: #eca800;
-}
 
 .resultHead {
   display: flex;

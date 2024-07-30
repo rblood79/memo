@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 import { isMobile } from 'react-device-detect';
 
 import { doc, query, where, getDoc, getDocs, orderBy, deleteDoc } from 'firebase/firestore';
+import moment from "moment";
 
 const App = (props) => {
   const history = useHistory();
@@ -60,6 +61,10 @@ const App = (props) => {
         wordBreak: "keep-all",
         borderBottom: "0.5pt solid #ccc"
       },
+      thE: {
+        background: "#f00",
+        width: "0.5pt",
+      },
       td: {
         border: "0.5pt solid #d3d3d3",
         fontWeight: "400",
@@ -80,19 +85,15 @@ const App = (props) => {
       },
       tdRed: {
         background: "#D01414",
-        padding: "2px",
       },
-      tdGreen:{
+      tdGreen: {
         background: "#20D067",
-        padding: "2px",
       },
-      tdYellow:{
+      tdYellow: {
         background: "#EFD214",
-        padding: "2px",
       },
-      tdNormal:{
+      tdNormal: {
         background: "#efefef",
-        padding: "2px",
       }
     }
   }
@@ -176,7 +177,6 @@ const App = (props) => {
   }
 
   const onDownload = async () => {
-    //console.log(tableRef.current.outerHTML)
     let xData = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
     xData += '<head><meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
     xData += '<xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>'
@@ -187,12 +187,13 @@ const App = (props) => {
     xData += tableRef.current.outerHTML;
     xData += '</body></html>';
 
+    let fileName = moment(new Date()).format("YYYYMMDD");
     let blob = new Blob([xData], {
       type: "application/csv;charset=utf-8;"
     });
-    var a = document.createElement("a");
+    let a = document.createElement("a");
     a.href = window.URL.createObjectURL(blob);
-    a.download = "test.xls";
+    a.download = "과제관리" + fileName + ".xls";
     a.click();
   }
 
@@ -301,7 +302,7 @@ const App = (props) => {
                   <th style={style.table.th}>Y+3</th>
                   <th style={style.table.th}>Y+4</th>
                   <th style={style.table.th}>Y+5</th>
-                  <th></th>
+                  <th style={style.table.thE}></th>
                 </tr>
               </thead>
               <tbody>

@@ -46,14 +46,11 @@ const App = (props) => {
   return (
     <div className={isMobile ? "App mobile" : "App"} style={{ height: props.location.pathname === '/' && '100%', backgroundColor:  props.location.pathname === '/main' && '#0078D7'}}>
       {user && <Head path={props.location.pathname}/>}
-      {isMobile ? <div className='notSupport'>모바일은 지원하지 않습니다.</div> : 
       <main className='main'>
         <Route exact path="/" render={() => <Home manage={manageRef}/>} />
         <Route path="/form" render={() => <Form manage={manageRef}/>} />
         <Route path="/result" render={() => <Result manage={manageRef}/>} />
       </main>
-      }
-      
       <Foot />
     </div>
   );
