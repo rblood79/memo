@@ -53,20 +53,19 @@ const App = (props) => {
       tableLayout: "fixed",
       th: {
         background: "#efefef",
-        border: "0.5pt solid #d3d3d3",
+        border: isMobile ? "1px solid #d3d3d3" : "0.5pt solid #d3d3d3",
         fontWeight: "400",
         padding: "6px 4px",
         height: "51px",
         minHeight: "51px",
         wordBreak: "keep-all",
-        borderBottom: "0.5pt solid #ccc"
+        borderBottom: isMobile ? "1px solid #ccc" : "0.5pt solid #ccc"
       },
       thE: {
-        background: "#f00",
-        width: "0.5pt",
+        width: isMobile ? "0pt" : "0.5pt",
       },
       td: {
-        border: "0.5pt solid #d3d3d3",
+        border: isMobile ? "1px solid #d3d3d3" : "0.5pt solid #d3d3d3",
         fontWeight: "400",
         padding: "6px 4px",
         height: "51px",
@@ -75,7 +74,7 @@ const App = (props) => {
         textAlign: "center",
       },
       tdB: {
-        border: "0.5pt solid #d3d3d3",
+        border: isMobile ? "1px solid #d3d3d3" : "0.5pt solid #d3d3d3",
         fontWeight: "400",
         padding: "6px 4px",
         height: "51px",
@@ -156,6 +155,7 @@ const App = (props) => {
           <td style={style.table.td}>{d3Array[index]}</td>
           <td style={style.table.td}>{d4Array[index]}</td>
           <td style={style.table.td}>{d5Array[index]}</td>
+          <td></td>
         </tr>
       )
     });
@@ -244,7 +244,7 @@ const App = (props) => {
         <div className='resultHead'>
           <h2 className='title'>과제현황<span className='titleSub'>- 전체 {data && data.length}건</span></h2>
           <div className='resultRight'>
-            <button className="refresh" onClick={onDownload}><i className="ri-file-excel-2-line"></i><span>엑셀다운</span></button>
+            {!isMobile && <button className="refresh" onClick={onDownload}><i className="ri-file-excel-2-line"></i><span>엑셀다운</span></button>}
             <button className="refresh" onClick={onLoad}><i className="ri-restart-line"></i><span>재조회</span></button>
           </div>
         </div>

@@ -238,7 +238,7 @@ const App = (props) => {
           </div>
           <div className='formBody'>
 
-          <h3>단일입력폼</h3>
+          <h3>단일입력</h3>
             <div className='formGroup'>
               <div className='formWrap'>
                 <label className='label'>관리번호</label>
@@ -385,7 +385,7 @@ const App = (props) => {
                 </select>
               </div>
             </div>
-            <h3>다중입력폼</h3>
+            <h3>다중입력</h3>
             <div className='formGroup'>
               <div className='formWrap'>
                 <label className='label'>관리지표</label>

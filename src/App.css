@@ -637,7 +637,7 @@
 
 tbody td:hover{
   transition: all 0.3s ease-in-out;
-  background-color: #efefef !important;
+  background-color: #effdff !important;
 }
 
 tbody tr:hover td.delTd{
@@ -820,12 +820,27 @@ tbody tr:hover td.delTd{
 }
 
 .formWrap input, .formWrap select , .formWrap textarea {
+  -webkit-appearance: none;
+  
   flex: 1;
-  /*min-width: 260px;*/
   border: 1px solid #E0E0E0;
+  border-radius: 0;
   padding: 8px;
   font-size: 12px;
   resize: none;
+  background-color: transparent;
+
+  outline: none;
+}
+
+.formWrap select {
+  background-image: url("./assets/arrow-down-s-line.png");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 10px) center;
+}
+
+.formWrap input:focus, .formWrap select:focus, .formWrap textarea:focus {
+  background-color: #effdff;
 }
 
 .formWrap textarea {
