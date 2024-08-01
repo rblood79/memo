@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 import _ from 'lodash';
 import 'remixicon/fonts/remixicon.css'
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
 import context from '../component/Context';
 import { useHistory, useLocation } from "react-router-dom";
 import { isMobile } from 'react-device-detect';
@@ -153,13 +153,14 @@ const App = (props) => {
 
     if (docSnap.exists()) {
       //console.log('아직있음')
+      onDelete(id);
     } else {
       //console.log('지워짐')
       onLoad();
     }
   }
 
-  const onLoad = async () => {
+  const onLoad = useCallback(async () => {
     setInputs({
       regNum: '', regTitle: '', regLeader: '', regIndi: ''
     })
@@ -173,7 +174,7 @@ const App = (props) => {
     });
 
     setData(manageDoc);
-  }
+  })
 
   const onDownload = async () => {
     let xData = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
@@ -206,13 +207,14 @@ const App = (props) => {
       onLoad();
       history.replace({ state: {} });  // 상태 초기화
     }
-  }, [location]);
+  }, [history, location, onLoad]);
 
   useEffect(() => {
     data && filterData();
-  }, [data])
+  }, [data, filterData])
 
-  const filterData = () => {
+  const filterData = useCallback(() => {
+    //console.log('filter');
     const tempData = _.filter(data, function (o) {
       const isNumMatch = o.ID.match(regNum);
       const isTitleMatch = o.TITLE.match(regTitle);
@@ -224,8 +226,7 @@ const App = (props) => {
     });
     //console.log('제목:', regTitle, '팀장:', regLeader, '사후관리:', regColor);
     setResult(tempData);
-    //console.log(data, tempData)
-  };
+  });
 
 
   const colorArray = ["all", "red", "green", "yellow"];
@@ -323,7 +324,7 @@ const App = (props) => {
               </select>
             </div>
 
-            <button className="search" onClick={() => { filterData() }}>< i className="ri-search-line"></i></button>
+            <button className="search" onClick={filterData}>< i className="ri-search-line"></i></button>
             {!isMobile && <button className="search excel" onClick={onDownload}><i className="ri-file-excel-2-line"></i></button>}
           </div>
 
