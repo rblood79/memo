@@ -76,11 +76,7 @@ const App = (props) => {
   //const yearArray = ["2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034", "2035", "2036", "2037", "2038", "2039", "2040"]
   const yearArray = ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034"]
   const colorArray = ["red", "green", "yellow"]
-  //const [Selected, setSelected] = useState("");
-
-  /*const handleSelect = (e) => {
-    setStartcompyear(e.target.value);
-  };*/
+  
   const onLoad = async () => {
     if (location.state) {
       const docRef = doc(props.manage, location.state.userCell);
@@ -95,27 +91,19 @@ const App = (props) => {
     }
   }
 
-  const onSucsses = async(id) => {
-    const docRef = doc(props.manage, id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      //console.log('아직있음')
-      history.push('/result');
-    }else{
-      //console.log('지워짐')
-    }
+  const onSucsses = async (id) => {
+    history.push('/result', { updated: true });
   }
 
-  const onCheck = async(id)=>{
+  const onCheck = async (id) => {
     const docRef = doc(props.manage, id);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       //console.log('아직있음')
-    }else{
+    } else {
       //console.log('지워짐')
-      history.push('/result');
+      history.push('/result', { updated: true });
     }
   }
 
@@ -184,7 +172,6 @@ const App = (props) => {
     /**/
   }
   const onUpdate = async () => {
-    //console.log('update')
     await updateDoc(doc(props.manage, id), {
       ID: id,
       CHECKNUM: checknum,
@@ -213,20 +200,21 @@ const App = (props) => {
     }, onSucsses(id));
   }
 
-  /*useMemo(() => {
-    if (!armor && !shoes && !gloves && !mask) {
-      setActive(0)
-    } else {
-      setActive(active + 1)
-    }
-  }, [armor, shoes, gloves, mask])*/
-  /*const onChange = (e) => {
-    setId(e.target.value);
-  }*/
-
   useEffect(() => {
     !user ? history.push('/') : onLoad(false);
   }, [])
+
+
+
+  useEffect(() => {
+    if (data) {
+      setInputs({
+        id: data.ID, checknum: data.CHECKNUM, leader: data.LEADER, title: data.TITLE, endcompyear: data.ENDCOMPYEAR,
+        endyear: data.ENDYEAR, result: data.RESULT, indi: data.INDI, unit: data.UNIT, datay0: data.DATAY0,
+        datay1: data.DATAY1, datay2: data.DATAY2, datay3: data.DATAY3, datay4: data.DATAY4, datay5: data.DATAY5
+      });
+    }
+  }, [data]);
 
   return (
     <>
@@ -234,11 +222,11 @@ const App = (props) => {
         <div className='users'>
           <div className='resultHead'>
             <h2 className='title'>과제{data ? '수정' : '등록'}</h2>
-            <span>{data && "마지막 수정일 "+moment(data.DATE).format("YYYY-MM-DD hh:mm:ss")}</span>
+            <span>{data && "마지막 수정일 " + moment(data.DATE).format("YYYY-MM-DD hh:mm:ss")}</span>
           </div>
           <div className='formBody'>
 
-          <h3>단일입력</h3>
+            <h3>단일입력</h3>
             <div className='formGroup'>
               <div className='formWrap'>
                 <label className='label'>관리번호</label>

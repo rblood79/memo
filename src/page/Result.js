@@ -1,9 +1,9 @@
 /* eslint-disable array-callback-return */
-//import _ from 'lodash';
+import _ from 'lodash';
 import 'remixicon/fonts/remixicon.css'
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import context from '../component/Context';
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { isMobile } from 'react-device-detect';
 
 import { doc, query, where, getDoc, getDocs, orderBy, deleteDoc } from 'firebase/firestore';
@@ -12,36 +12,15 @@ import moment from "moment";
 const App = (props) => {
   const history = useHistory();
   const state = useContext(context);
+  const location = useLocation();
   const { user } = state;
   const [data, setData] = useState(null);
+  const [result, setResult] = useState([]);
 
   const tableRef = useRef();
   //const [dataF, setDataF] = useState(null);
 
-  const test = (e) => {
-    //console.log('시험버전에선 제공되지 않습니다', e.ID, e)
-    //history.push('/form',e)
-    history.push({
-      pathname: '/form',
-      state: { userCell: e.ID }
-    })
-  }
 
-  const onDelete = async (id) => {
-    await deleteDoc(doc(props.manage, id), onCheck(id));
-  }
-
-  const onCheck = async (id) => {
-    const docRef = doc(props.manage, id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      //console.log('아직있음')
-    } else {
-      //console.log('지워짐')
-      onLoad();
-    }
-  }
   const style = {
     table: {
       width: "100%",
@@ -63,6 +42,10 @@ const App = (props) => {
       },
       thE: {
         width: isMobile ? "0pt" : "0.5pt",
+      },
+      tdE: {
+        height: "51px",
+        minHeight: "51px",
       },
       td: {
         border: isMobile ? "1px solid #d3d3d3" : "0.5pt solid #d3d3d3",
@@ -97,8 +80,9 @@ const App = (props) => {
     }
   }
 
+  
   const ItemList = (props) => {
-    const item = props.data[1];
+    const item = props.data;
     const indiArray = item.INDI ? item.INDI.split('\n') : [];
     const unitArray = item.UNIT ? item.UNIT.split('\n') : [];
     const d0Array = item.DATAY0 ? item.DATAY0.split('\n') : [];
@@ -136,36 +120,51 @@ const App = (props) => {
         <td style={style.table.td}>{d5Array[0]}</td>
         {isMobile ? <td className='delTd' onClick={() => { test(item) }}><i className="ri-edit-circle-fill"></i></td> : <td className='delTd' onClick={() => { onDelete(item.ID) }}><i className="ri-close-circle-fill"></i></td>}
       </tr>
-      {indiArray.length > 0 && SplitItem(indiArray, unitArray, d0Array, d1Array, d2Array, d3Array, d4Array, d5Array, item)}
+      {indiArray.length > 0 && indiArray.slice(1).map((indi, index) => (
+        <tr key={`list${index + 1}`} onDoubleClick={() => !isMobile && test(item)}>
+          <td style={style.table.td}>{indi}</td>
+          <td style={style.table.td}>{unitArray[index + 1]}</td>
+          <td style={style.table.td}>{d0Array[index + 1]}</td>
+          <td style={style.table.td}>{d1Array[index + 1]}</td>
+          <td style={style.table.td}>{d2Array[index + 1]}</td>
+          <td style={style.table.td}>{d3Array[index + 1]}</td>
+          <td style={style.table.td}>{d4Array[index + 1]}</td>
+          <td style={style.table.td}>{d5Array[index + 1]}</td>
+          <td></td>
+        </tr>
+      ))}
     </>
 
   }
-
-
-  const SplitItem = (indi, unit, d0Array, d1Array, d2Array, d3Array, d4Array, d5Array, itemID) => {
-    const result = [];
-    indi.map((item, index) => {
-      index > 0 && result.push(
-        <tr key={'list' + index} onDoubleClick={() => !isMobile && test(itemID)}>
-          <td style={style.table.td}>{indi[index]}</td>
-          <td style={style.table.td}>{unit[index]}</td>
-          <td style={style.table.td}>{d0Array[index]}</td>
-          <td style={style.table.td}>{d1Array[index]}</td>
-          <td style={style.table.td}>{d2Array[index]}</td>
-          <td style={style.table.td}>{d3Array[index]}</td>
-          <td style={style.table.td}>{d4Array[index]}</td>
-          <td style={style.table.td}>{d5Array[index]}</td>
-          <td></td>
-        </tr>
-      )
-    });
-    return result;
+  const test = (e) => {
+    history.push({
+      pathname: '/form',
+      state: { userCell: e.ID }
+    })
   }
 
+  const onDelete = async (id) => {
+    await deleteDoc(doc(props.manage, id), onCheck(id));
+  }
+
+  const onCheck = async (id) => {
+    const docRef = doc(props.manage, id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      //console.log('아직있음')
+    } else {
+      //console.log('지워짐')
+      onLoad();
+    }
+  }
 
   const onLoad = async () => {
-    //console.log('onLoad')
-    //setData(null);
+    setInputs({
+      regNum: '', regTitle: '', regLeader: '', regIndi: ''
+    })
+    setColor('all');
+    //
     const manageDoc = [];
     const mn = query(props.manage, where("ID", "!=", ""), orderBy("ID", "desc"));
     const manageSnapshot = await getDocs(mn);
@@ -200,33 +199,45 @@ const App = (props) => {
   useEffect(() => {
     !user ? history.push('/') : onLoad();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, history])
+  }, [user, history]);
 
-  /*const comma = (str)=> {
-    str = String(str);
-    return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
-  }*/
+  useEffect(() => {
+    if (location.state && location.state.updated) {
+      onLoad();
+      history.replace({ state: {} });  // 상태 초기화
+    }
+  }, [location]);
 
-  /*const filterData =(s,e)=>{
-    const start = s-1 || 0;
-    const end = e-1 || data.length-1;
-    const xx = _.filter(data, function(o,index){
-      return index >= start && index <= end
-    })
-    setDataF(xx);
-  }*/
+  useEffect(() => {
+    data && filterData();
+  }, [data])
+
+  const filterData = () => {
+    const tempData = _.filter(data, function (o) {
+      const isNumMatch = o.ID.match(regNum);
+      const isTitleMatch = o.TITLE.match(regTitle);
+      const isIndiMatch = o.INDI.match(regIndi);
+      const isLeaderMatch = regLeader === '' || o.LEADER === regLeader;
+      const isColorMatch = regColor === 'all' || o.COLOR === regColor;
+
+      return isNumMatch && isTitleMatch && isLeaderMatch && isColorMatch && isIndiMatch;
+    });
+    //console.log('제목:', regTitle, '팀장:', regLeader, '사후관리:', regColor);
+    setResult(tempData);
+    //console.log(data, tempData)
+  };
 
 
+  const colorArray = ["all", "red", "green", "yellow"];
 
-  /*useEffect(() => {
-    data && console.log('data up!!!!!!', _.filter(data, ['STARTCOMPYEAR', "2014"]))
-  }, [data])*/
-
-  /*const [inputs, setInputs] = useState({
-    startNum: "",
-    endNum: "",
+  const [inputs, setInputs] = useState({
+    regNum: "",
+    regTitle: "",
+    regLeader: "",
+    regIndi: "",
   });
-  const { startNum, endNum } = inputs;
+  const { regNum, regTitle, regLeader, regIndi } = inputs;
+  const [regColor, setColor] = useState('all');
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -235,20 +246,86 @@ const App = (props) => {
       ...inputs,
       [name]: value || "",
     });
-  };*/
+  };
 
   return (
     <div className='resultContainer'>
 
       <div className='users'>
+
         <div className='resultHead'>
           <h2 className='title'>과제현황<span className='titleSub'>- 전체 {data && data.length}건</span></h2>
           <div className='resultRight'>
-            {!isMobile && <button className="refresh" onClick={onDownload}><i className="ri-file-excel-2-line"></i><span>엑셀다운</span></button>}
             <button className="refresh" onClick={onLoad}><i className="ri-restart-line"></i><span>재조회</span></button>
           </div>
         </div>
+
         <div>
+
+          <div className='searchForm'>
+            <div className='formWrap'>
+              <label className='label'>
+                관리번호
+              </label>
+              <input
+                name="regNum"
+                placeholder="관리번호"
+                onChange={onChange}
+                value={regNum || ""}
+              />
+            </div>
+
+            <div className='formWrap'>
+              <label className='label'>
+                과제명
+              </label>
+              <input
+                name="regTitle"
+                placeholder="과제명"
+                onChange={onChange}
+                value={regTitle || ""}
+              />
+            </div>
+
+            <div className='formWrap'>
+              <label className='label'>
+                팀장
+              </label>
+              <input
+                name="regLeader"
+                placeholder="팀장"
+                onChange={onChange}
+                value={regLeader || ""}
+              />
+            </div>
+
+            <div className='formWrap'>
+              <label className='label'>
+                관리지표
+              </label>
+              <input
+                name="regIndi"
+                placeholder="관리지표"
+                onChange={onChange}
+                value={regIndi || ""}
+              />
+            </div>
+
+            <div className='formWrap'>
+              <label className='label'>사후관리</label>
+              <select onChange={(e) => { setColor(e.target.value) }} value={regColor ? regColor : "default"}>
+                <option value="default" disabled>선택하세요</option>
+                {colorArray.map((item) => (
+                  <option value={item} key={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button className="search" onClick={() => { filterData() }}>< i className="ri-search-line"></i></button>
+            {!isMobile && <button className="search excel" onClick={onDownload}><i className="ri-file-excel-2-line"></i></button>}
+          </div>
 
           <div className='tableContents'>
             <table ref={tableRef} style={style.table}>
@@ -307,7 +384,13 @@ const App = (props) => {
               </thead>
               <tbody>
                 {
-                  data && Object.entries(data).map((item) => <ItemList key={item[0] + item[1]} data={item} />)
+                  //data && Object.entries(data).map((item) => <ItemList key={item[0] + item[1]} data={item} />)
+                }
+
+                {
+                  result.length > 0 ? result.map((item, index) => (
+                    <ItemList key={'itemKey' + index} data={item} />
+                  )) : <tr><td colSpan="22" style={style.table.tdE}>no data</td></tr>
                 }
               </tbody>
             </table>
