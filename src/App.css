@@ -494,6 +494,11 @@
   background-color: #303E4D;
 }
 
+.controll .back {
+  color: #303E4D;
+  border: 1px solid #303E4D;
+}
+
 .buttonLeft {
   margin-right: 8px;
   background-color: #efefef;
@@ -818,6 +823,7 @@ tbody tr:hover td.delTd{
 }
 
 .formWrap input, .formWrap select , .formWrap textarea {
+  appearance: none;
   -webkit-appearance: none;
   
   flex: 1;

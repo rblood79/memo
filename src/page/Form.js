@@ -1,144 +1,131 @@
-
-import React, { useContext, useState, useEffect, } from 'react';
+import _ from 'lodash';
+import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
 import { doc, deleteDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-
 import moment from "moment";
 import 'moment/locale/ko';
-
 import context from '../component/Context';
+
 const App = (props) => {
   const history = useHistory();
   const state = useContext(context);
   const location = useLocation();
-  //const userCell = null || location.state.userCell;
-
   const { user } = state;
-
   const [data, setData] = useState(null);
-
-  /*const [flag, setFlag] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [active, setActive] = useState(0);*/
-
-
   const [startcompyear, setStartcompyear] = useState(null);
   const [startcompresult, setStartcompresult] = useState(null);
   const [endcompresult, setEndcompresult] = useState(null);
-
   const [startyear, setStartyear] = useState(null);
   const [startresult, setStartresult] = useState(null);
   const [endresult, setEndresult] = useState(null);
   const [color, setColor] = useState(null);
 
+  const memoizedInputs = useMemo(() => ({
+    id: data?.ID || "",
+    checknum: data?.CHECKNUM || "",
+    leader: data?.LEADER || "",
+    title: data?.TITLE || "",
+    endcompyear: data?.ENDCOMPYEAR || "",
+    endyear: data?.ENDYEAR || "",
+    result: data?.RESULT || "",
+    indi: data?.INDI || "",
+    unit: data?.UNIT || "",
+    datay0: data?.DATAY0 || "",
+    datay1: data?.DATAY1 || "",
+    datay2: data?.DATAY2 || "",
+    datay3: data?.DATAY3 || "",
+    datay4: data?.DATAY4 || "",
+    datay5: data?.DATAY5 || "",
 
-  const [inputs, setInputs] = useState({
-    id: "",
-    checknum: "",
-    leader: "",
-    title: "",
-    endcompyear: "",
-    endyear: "",
-    result: "",
-    indi: "",
-    unit: "",
-    datay0: "",
-    datay1: "",
-    datay2: "",
-    datay3: "",
-    datay4: "",
-    datay5: "",
-  });
+  }), [data]);
+
+  const [inputs, setInputs] = useState(memoizedInputs);
   const { id, checknum, leader, title, endcompyear, endyear, result, indi, unit, datay0, datay1, datay2, datay3, datay4, datay5 } = inputs;
 
   const onChange = (e) => {
     const { name, value } = e.target;
-
     setInputs({
       ...inputs,
       [name]: value || "",
     });
   };
 
-  /*const onReset = () => {
-    setInputs({
-      id: "",
-      title: "",
-    });
-  };*/
-
   const startCompResultArray = ["완료", "조건부완료", "중단", "연장"];
   const endCompResultArray = ["완료", "조건부완료", "중단", "연장", "1차완료"];
-
   const startResultArray = ["인증", "인증(대상)", "인증(금상)", "인증(은상)", "인증(동상)", "인증(장려)", "미인증(중단)", "미인증(재도전)"];
   const endResultArray = ["인증", "인증(대상)", "인증(금상)", "인증(은상)", "인증(동상)", "인증(장려)", "미인증(중단)"];
+  const yearArray = ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034"];
+  const colorArray = ["red", "green", "yellow"];
 
-  //const yearArray = ["2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034", "2035", "2036", "2037", "2038", "2039", "2040"]
-  const yearArray = ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034"]
-  const colorArray = ["red", "green", "yellow"]
-  
   const onLoad = async () => {
     if (location.state) {
       const docRef = doc(props.manage, location.state.userCell);
       const docSnap = await getDoc(docRef);
-
       if (docSnap.exists()) {
-        setData(docSnap.data())
+        setData(docSnap.data());
       } else {
         console.log("No such document!");
       }
-
     }
-  }
+  };
 
   const onSucsses = async (id) => {
-    history.push('/result', { updated: true });
-  }
-
-  const onCheck = async (id) => {
-    const docRef = doc(props.manage, id);
-    const docSnap = await getDoc(docRef);
-
-    if (docSnap.exists()) {
-      //console.log('아직있음')
+    if (location.state) {
+      const docRef = doc(props.manage, location.state.userCell);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        //console.log(data,'//' ,docSnap.data())
+        !_.isEqual(data, docSnap.data()) && history.push('/result', { updated: true });
+      } else {
+        console.log('fail');
+      }
     } else {
-      //console.log('지워짐')
       history.push('/result', { updated: true });
     }
-  }
+  };
+
+  const deleteCheck = async (id) => {
+    const docRef = doc(props.manage, id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      console.log('아직있음');
+    } else {
+      history.push('/result', { updated: true });
+    }
+  };
 
   useEffect(() => {
-    data && setInputs({
-      id: data.ID, checknum: data.CHECKNUM, leader: data.LEADER, title: data.TITLE, endcompyear: data.ENDCOMPYEAR, endyear: data.ENDYEAR, result: data.RESULT, indi: data.INDI, unit: data.UNIT, datay0: data.DATAY0, datay1: data.DATAY1, datay2: data.DATAY2, datay3: data.DATAY3, datay4: data.DATAY4, datay5: data.DATAY5
-    })
+    if (data) {
+      setInputs(memoizedInputs);
+      setStartcompyear(data.STARTCOMPYEAR);
+      setStartcompresult(data.STARTCOMPRESULT);
+      setEndcompresult(data.ENDCOMPRESULT);
+      setStartyear(data.STARTYEAR);
+      setStartresult(data.STARTRESULT);
+      setEndresult(data.ENDRESULT);
+      setColor(data.COLOR);
+    }
+  }, [data, memoizedInputs]);
 
-    data && setStartcompyear(data.STARTCOMPYEAR);
-    data && setStartcompresult(data.STARTCOMPRESULT);
-    data && setEndcompresult(data.ENDCOMPRESULT);
-    data && setStartyear(data.STARTYEAR);
-    data && setStartresult(data.STARTRESULT);
-    data && setEndresult(data.ENDRESULT);
-    data && setColor(data.COLOR);
-
-    //data && console.log(moment(data.DATE).format("YYYY-MM-DD hh:mm:ss"))
-  }, [data])
+  useEffect(() => {
+    !user ? history.push('/') : onLoad();
+  }, []);
 
   const onDelete = async () => {
     if (location.state) {
-      /*const docRef = doc(props.manage, location.state.userCell);
-      deleteDoc(docRef)*/
-      await deleteDoc(doc(props.manage, location.state.userCell), onCheck(location.state.userCell));
+      await deleteDoc(doc(props.manage, location.state.userCell), deleteCheck(location.state.userCell));
     }
+  };
+
+  const onBack = ()=>{
+    history.push('/result', { updated: false });
   }
 
   const onSave = async () => {
-
     const docRef = doc(props.manage, id);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
-      //console.log("기존데이터 존재", docSnap.data())
-      alert("관리번호 " + id + "가 등록 되어있습니다 기존자료에서 수정하거나 관리번호를 변경하여 등록 하세요")
+      alert("관리번호 " + id + "가 등록 되어있습니다 기존자료에서 수정하거나 관리번호를 변경하여 등록 하세요");
     } else {
       await setDoc(doc(props.manage, id), {
         ID: id,
@@ -164,16 +151,13 @@ const App = (props) => {
         DATAY4: datay4,
         DATAY5: datay5,
         DATE: new Date().toUTCString()
-
       }, onSucsses(id));
     }
+  };
 
-    //console.log('onSave')
-    /**/
-  }
   const onUpdate = async () => {
-    //await updateDoc(doc(props.manage, id), {
-    await setDoc(doc(props.manage, id), {
+    await updateDoc(doc(props.manage, id), {
+    //await setDoc(doc(props.manage, id), {
       ID: id,
       CHECKNUM: checknum,
       LEADER: leader,
@@ -197,25 +181,8 @@ const App = (props) => {
       DATAY4: datay4,
       DATAY5: datay5,
       DATE: new Date().toUTCString()
-
     }, onSucsses(id));
-  }
-
-  useEffect(() => {
-    !user ? history.push('/') : onLoad(false);
-  }, [])
-
-
-
-  useEffect(() => {
-    if (data) {
-      setInputs({
-        id: data.ID, checknum: data.CHECKNUM, leader: data.LEADER, title: data.TITLE, endcompyear: data.ENDCOMPYEAR,
-        endyear: data.ENDYEAR, result: data.RESULT, indi: data.INDI, unit: data.UNIT, datay0: data.DATAY0,
-        datay1: data.DATAY1, datay2: data.DATAY2, datay3: data.DATAY3, datay4: data.DATAY4, datay5: data.DATAY5
-      });
-    }
-  }, [data]);
+  };
 
   return (
     <>
@@ -226,7 +193,6 @@ const App = (props) => {
             <span>{data && "마지막 수정일 " + moment(data.DATE).format("YYYY-MM-DD hh:mm:ss")}</span>
           </div>
           <div className='formBody'>
-
             <h3>단일입력</h3>
             <div className='formGroup'>
               <div className='formWrap'>
@@ -270,14 +236,11 @@ const App = (props) => {
                 <label className='label'>1차 완료평가연도</label>
                 <select onChange={(e) => { setStartcompyear(e.target.value) }} value={startcompyear ? startcompyear : "default"}>
                   <option value="default" disabled>선택하세요</option>
-                  {
-                    yearArray.map((item) => (
-                      <option value={item} key={item}>
-                        {item}
-                      </option>
-                    ))
-                  }
-
+                  {yearArray.map((item) => (
+                    <option value={item} key={item}>
+                      {item}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className='formWrap borderTop'>
@@ -456,30 +419,19 @@ const App = (props) => {
                   rows={5}
                 ></textarea>
               </div>
-
             </div>
-
-
-
           </div>
           <div className='controll'>
+            <button className={'button back'} onClick={() => { onBack() }}>목록</button>
             {location.state && <button className={'button delete'} onClick={() => { onDelete() }}>삭제</button>}
-
-            {
-              location.state ? <button className={'button'} onClick={() => { onUpdate() }}>수정</button> : <button className={'button'} disabled={!id} onClick={() => { onSave() }}>저장</button>
-            }
+            {location.state ? <button className={'button'} onClick={() => { onUpdate() }}>수정</button> : <button className={'button'} disabled={!id} onClick={() => { onSave() }}>저장</button>}
           </div>
-
         </div>
-
-
-
       </div>
     </>
   );
 }
 
-App.defaultProps = {
-};
+App.defaultProps = {};
 
 export default App;

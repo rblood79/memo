@@ -1,25 +1,20 @@
-/* eslint-disable array-callback-return */
 import _ from 'lodash';
 import 'remixicon/fonts/remixicon.css'
-import React, { useState, useEffect, useContext, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react';
 import context from '../component/Context';
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { isMobile } from 'react-device-detect';
-
 import { doc, query, where, getDoc, getDocs, orderBy, deleteDoc } from 'firebase/firestore';
 import moment from "moment";
 
 const App = (props) => {
   const history = useHistory();
   const state = useContext(context);
-  const location = useLocation();
+  //const location = useLocation();
   const { user } = state;
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [result, setResult] = useState([]);
-
   const tableRef = useRef();
-  //const [dataF, setDataF] = useState(null);
-
 
   const style = {
     table: {
@@ -78,9 +73,8 @@ const App = (props) => {
         background: "#efefef",
       }
     }
-  }
+  };
 
-  
   const ItemList = (props) => {
     const item = props.data;
     const indiArray = item.INDI ? item.INDI.split('\n') : [];
@@ -92,89 +86,96 @@ const App = (props) => {
     const d4Array = item.DATAY4 ? item.DATAY4.split('\n') : [];
     const d5Array = item.DATAY5 ? item.DATAY5.split('\n') : [];
 
-
     const rspan = indiArray.length > 0 ? indiArray.length : 1;
-    return <>
-      <tr onDoubleClick={() => !isMobile && test(item)}>
-        <td rowSpan={rspan} style={style.table.td}>{item.ID}</td>
-        <td rowSpan={rspan} style={style.table.tdB}>{item.CHECKNUM}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.LEADER}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.TITLE}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.STARTCOMPYEAR}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.STARTCOMPRESULT}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.ENDCOMPYEAR}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.ENDCOMPRESULT}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.STARTYEAR}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.STARTRESULT}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.ENDCOMPYEAR}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.ENDRESULT}</td>
-        <td rowSpan={rspan} style={style.table.td}>{item.RESULT}</td>
-        <td rowSpan={rspan} style={item.COLOR === 'red' ? style.table.tdRed : item.COLOR === 'green' ? style.table.tdGreen : item.COLOR === 'yellow' ? style.table.tdYellow : style.table.tdNormal}></td>
-        <td style={style.table.td}>{indiArray[0]}</td>
-        <td style={style.table.td}>{unitArray[0]}</td>
-        <td style={style.table.td}>{d0Array[0]}</td>
-        <td style={style.table.td}>{d1Array[0]}</td>
-        <td style={style.table.td}>{d2Array[0]}</td>
-        <td style={style.table.td}>{d3Array[0]}</td>
-        <td style={style.table.td}>{d4Array[0]}</td>
-        <td style={style.table.td}>{d5Array[0]}</td>
-        {isMobile ? <td className='delTd' onClick={() => { test(item) }}><i className="ri-edit-circle-fill"></i></td> : <td className='delTd' onClick={() => { onDelete(item.ID) }}><i className="ri-close-circle-fill"></i></td>}
-      </tr>
-      {indiArray.length > 0 && indiArray.slice(1).map((indi, index) => (
-        <tr key={`list${index + 1}`} onDoubleClick={() => !isMobile && test(item)}>
-          <td style={style.table.td}>{indi}</td>
-          <td style={style.table.td}>{unitArray[index + 1]}</td>
-          <td style={style.table.td}>{d0Array[index + 1]}</td>
-          <td style={style.table.td}>{d1Array[index + 1]}</td>
-          <td style={style.table.td}>{d2Array[index + 1]}</td>
-          <td style={style.table.td}>{d3Array[index + 1]}</td>
-          <td style={style.table.td}>{d4Array[index + 1]}</td>
-          <td style={style.table.td}>{d5Array[index + 1]}</td>
-          <td></td>
+    return (
+      <>
+        <tr onDoubleClick={() => !isMobile && test(item)}>
+          <td rowSpan={rspan} style={style.table.td}>{item.ID}</td>
+          <td rowSpan={rspan} style={style.table.tdB}>{item.CHECKNUM}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.LEADER}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.TITLE}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.STARTCOMPYEAR}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.STARTCOMPRESULT}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.ENDCOMPYEAR}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.ENDCOMPRESULT}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.STARTYEAR}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.STARTRESULT}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.ENDCOMPYEAR}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.ENDRESULT}</td>
+          <td rowSpan={rspan} style={style.table.td}>{item.RESULT}</td>
+          <td rowSpan={rspan} style={item.COLOR === 'red' ? style.table.tdRed : item.COLOR === 'green' ? style.table.tdGreen : item.COLOR === 'yellow' ? style.table.tdYellow : style.table.tdNormal}></td>
+          <td style={style.table.td}>{indiArray[0]}</td>
+          <td style={style.table.td}>{unitArray[0]}</td>
+          <td style={style.table.td}>{d0Array[0]}</td>
+          <td style={style.table.td}>{d1Array[0]}</td>
+          <td style={style.table.td}>{d2Array[0]}</td>
+          <td style={style.table.td}>{d3Array[0]}</td>
+          <td style={style.table.td}>{d4Array[0]}</td>
+          <td style={style.table.td}>{d5Array[0]}</td>
+          {isMobile ? <td className='delTd' onClick={() => { test(item) }}><i className="ri-edit-circle-fill"></i></td> : <td className='delTd' onClick={() => { onDelete(item.ID) }}><i className="ri-close-circle-fill"></i></td>}
         </tr>
-      ))}
-    </>
+        {indiArray.slice(1).map((indi, index) => (
+          <tr key={`list${index + 1}`} onDoubleClick={() => !isMobile && test(item)}>
+            <td style={style.table.td}>{indi}</td>
+            <td style={style.table.td}>{unitArray[index + 1]}</td>
+            <td style={style.table.td}>{d0Array[index + 1]}</td>
+            <td style={style.table.td}>{d1Array[index + 1]}</td>
+            <td style={style.table.td}>{d2Array[index + 1]}</td>
+            <td style={style.table.td}>{d3Array[index + 1]}</td>
+            <td style={style.table.td}>{d4Array[index + 1]}</td>
+            <td style={style.table.td}>{d5Array[index + 1]}</td>
+          </tr>
+        ))}
+      </>
+    );
+  };
 
-  }
   const test = (e) => {
     history.push({
       pathname: '/form',
       state: { userCell: e.ID }
-    })
-  }
+    });
+  };
 
   const onDelete = async (id) => {
-    await deleteDoc(doc(props.manage, id), onCheck(id));
-  }
+    await deleteDoc(doc(props.manage, id));
+    onCheck(id);
+  };
 
   const onCheck = async (id) => {
     const docRef = doc(props.manage, id);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
-      //console.log('아직있음')
-      onDelete(id);
+      console.log('Document still exists!');
     } else {
-      //console.log('지워짐')
+      //console.log('Document deleted');
       onLoad();
     }
-  }
+  };
 
-  const onLoad = useCallback(async () => {
+  /*const onReset = () => {
     setInputs({
       regNum: '', regTitle: '', regLeader: '', regIndi: ''
     })
     setColor('all');
-    //
+    setResult(data);
+  }*/
+  const onLoad = useCallback(async () => {
+    //console.log('onload--------------')
     const manageDoc = [];
-    const mn = query(props.manage, where("ID", "!=", ""), orderBy("ID", "desc"));
-    const manageSnapshot = await getDocs(mn);
-    manageSnapshot.forEach((doc) => {
-      manageDoc.push({ id: doc.id, ...doc.data() })
+    const q = query(props.manage, where("ID", "!=", ""), orderBy("ID", "desc"));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      manageDoc.push({ id: doc.id, ...doc.data() });
     });
-
     setData(manageDoc);
-  })
+  }, [props.manage]);
+
+  useEffect(() => {
+    //console.log('data change', data)
+    data && handleSearch();
+  // eslint-disable-next-line no-use-before-define
+  }, [data, handleSearch])
 
   const onDownload = async () => {
     let xData = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
@@ -195,41 +196,26 @@ const App = (props) => {
     a.href = window.URL.createObjectURL(blob);
     a.download = "과제관리" + fileName + ".xls";
     a.click();
-  }
+  };
 
   useEffect(() => {
-    !user ? history.push('/') : onLoad();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, history]);
+    if (!user) {
+      history.push('/');
+    } else {
+      //onLoad();
+      const timer = setTimeout(() => {
+        onLoad();
+      }, 100);
+      return () => clearTimeout(timer);	// 타이머 클리어
+    }
+  }, [user, history, onLoad]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (location.state && location.state.updated) {
       onLoad();
-      history.replace({ state: {} });  // 상태 초기화
+      history.replace({ state: {} });
     }
-  }, [history, location, onLoad]);
-
-  useEffect(() => {
-    data && filterData();
-  }, [data, filterData])
-
-  const filterData = useCallback(() => {
-    //console.log('filter');
-    const tempData = _.filter(data, function (o) {
-      const isNumMatch = o.ID.match(regNum);
-      const isTitleMatch = o.TITLE.match(regTitle);
-      const isIndiMatch = o.INDI.match(regIndi);
-      const isLeaderMatch = regLeader === '' || o.LEADER === regLeader;
-      const isColorMatch = regColor === 'all' || o.COLOR === regColor;
-
-      return isNumMatch && isTitleMatch && isLeaderMatch && isColorMatch && isIndiMatch;
-    });
-    //console.log('제목:', regTitle, '팀장:', regLeader, '사후관리:', regColor);
-    setResult(tempData);
-  });
-
-
-  const colorArray = ["all", "red", "green", "yellow"];
+  }, [history, location, onLoad]);*/
 
   const [inputs, setInputs] = useState({
     regNum: "",
@@ -242,92 +228,88 @@ const App = (props) => {
 
   const onChange = (e) => {
     const { name, value } = e.target;
-
     setInputs({
       ...inputs,
       [name]: value || "",
     });
   };
 
+  const memoizedResult = useMemo(() => {
+    return _.filter(data, function (o) {
+      const isNumMatch = !regNum || o.ID.includes(regNum);
+      const isTitleMatch = !regTitle || o.TITLE.includes(regTitle);
+      const isIndiMatch = !regIndi || o.INDI.includes(regIndi);
+      const isLeaderMatch = !regLeader || o.LEADER.includes(regLeader);
+      const isColorMatch = regColor === 'all' || o.COLOR === regColor;
+
+      return isNumMatch && isTitleMatch && isLeaderMatch && isColorMatch && isIndiMatch;
+    });
+  }, [data, regNum, regTitle, regLeader, regColor, regIndi]);
+
+  const handleSearch = useCallback(() => {
+    setResult(memoizedResult);
+    //console.log('handleSearch end')
+  }, [memoizedResult]);
+
   return (
     <div className='resultContainer'>
-
       <div className='users'>
-
         <div className='resultHead'>
-          <h2 className='title'>과제현황<span className='titleSub'>- 전체 {data && data.length}건</span></h2>
+          <h2 className='title'>과제현황<span className='titleSub'>- 전체 {data.length} 중 {result.length}건</span></h2>
           <div className='resultRight'>
-            <button className="refresh" onClick={onLoad}><i className="ri-restart-line"></i><span>재조회</span></button>
           </div>
         </div>
-
         <div>
-
           <div className='searchForm'>
             <div className='formWrap'>
-              <label className='label'>
-                관리번호
-              </label>
+              <label className='label'>관리번호</label>
               <input
                 name="regNum"
                 placeholder="관리번호"
                 onChange={onChange}
-                value={regNum || ""}
+                value={regNum}
               />
             </div>
-
             <div className='formWrap'>
-              <label className='label'>
-                과제명
-              </label>
+              <label className='label'>과제명</label>
               <input
                 name="regTitle"
                 placeholder="과제명"
                 onChange={onChange}
-                value={regTitle || ""}
+                value={regTitle}
               />
             </div>
-
             <div className='formWrap'>
-              <label className='label'>
-                팀장
-              </label>
+              <label className='label'>팀장</label>
               <input
                 name="regLeader"
                 placeholder="팀장"
                 onChange={onChange}
-                value={regLeader || ""}
+                value={regLeader}
               />
             </div>
-
             <div className='formWrap'>
-              <label className='label'>
-                관리지표
-              </label>
+              <label className='label'>관리지표</label>
               <input
                 name="regIndi"
                 placeholder="관리지표"
                 onChange={onChange}
-                value={regIndi || ""}
+                value={regIndi}
               />
             </div>
-
             <div className='formWrap'>
               <label className='label'>사후관리</label>
-              <select onChange={(e) => { setColor(e.target.value) }} value={regColor ? regColor : "default"}>
-                <option value="default" disabled>선택하세요</option>
-                {colorArray.map((item) => (
-                  <option value={item} key={item}>
-                    {item}
-                  </option>
-                ))}
+              <select onChange={(e) => { setColor(e.target.value) }} value={regColor}>
+                <option value="all">전체</option>
+                <option value="red">red</option>
+                <option value="green">green</option>
+                <option value="yellow">yellow</option>
               </select>
             </div>
-
-            <button className="search" onClick={filterData}>< i className="ri-search-line"></i></button>
+            <button className="search" onClick={handleSearch}><i className="ri-search-line"></i></button>
+            {/*<button className="refresh" onClick={onReset}><i className="ri-refresh-line"></i></button>*/}
             {!isMobile && <button className="search excel" onClick={onDownload}><i className="ri-file-excel-2-line"></i></button>}
           </div>
-
           <div className='tableContents'>
             <table ref={tableRef} style={style.table}>
               <colgroup>
@@ -369,7 +351,6 @@ const App = (props) => {
                   <th style={style.table.th}>1차성과<br />평가결과</th>
                   <th style={style.table.th}>2차성과<br />평가연도</th>
                   <th style={style.table.th}>2차성과<br />평가결과</th>
-
                   <th style={style.table.th}>재무성과<br />(원)</th>
                   <th style={style.table.th}>사후<br />관리</th>
                   <th style={style.table.th}>관리지표</th>
@@ -385,13 +366,9 @@ const App = (props) => {
               </thead>
               <tbody>
                 {
-                  //data && Object.entries(data).map((item) => <ItemList key={item[0] + item[1]} data={item} />)
-                }
-
-                {
-                  result.length > 0 ? result.map((item, index) => (
-                    <ItemList key={'itemKey' + index} data={item} />
-                  )) : <tr><td colSpan="22" style={style.table.tdE}>no data</td></tr>
+                result.length > 0 ? result.map((item) => (
+                  <ItemList key={item.ID + item.DATE} data={item} />
+                )) : <tr><td colSpan="22" style={style.table.tdE}>데이터가 없습니다</td></tr>
                 }
               </tbody>
             </table>
@@ -402,7 +379,6 @@ const App = (props) => {
   );
 }
 
-App.defaultProps = {
-};
+App.defaultProps = {};
 
 export default App;

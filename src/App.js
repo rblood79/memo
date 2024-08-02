@@ -33,7 +33,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-//const usersRef = collection(db, "users");
 const manageRef = collection(db, "manage");
 
 const App = (props) => {
