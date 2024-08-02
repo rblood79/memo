@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { useContext, useState, useEffect, useMemo } from 'react';
 import { useHistory, useLocation } from "react-router-dom";
-import { doc, deleteDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, deleteDoc, getDoc, setDoc } from 'firebase/firestore';
 import moment from "moment";
 import 'moment/locale/ko';
 import context from '../component/Context';
@@ -156,8 +156,8 @@ const App = (props) => {
   };
 
   const onUpdate = async () => {
-    await updateDoc(doc(props.manage, id), {
-    //await setDoc(doc(props.manage, id), {
+    //await updateDoc(doc(props.manage, id), {
+    await setDoc(doc(props.manage, id), {
       ID: id,
       CHECKNUM: checknum,
       LEADER: leader,
